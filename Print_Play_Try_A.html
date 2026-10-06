@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html lang = "en">
-<meta charset="UTF-8">
-<title>ADSR_Works</title>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Element Selector</title>
+    
 </head>
 <body>
 
-    <button id = "Play"> Play</button>
-    <p id="output-box">The result will appear here.</p>
-    
+    <button id="Pick_Play_Button">Pick and Play 1 </button>
+    <div id="result">Click the button to start!</div>
 
     <script>
-        function playNote(someContext, frequency, duration)
+            
+             const myCtx = new AudioContext();
+            
+            function playNote(someContext, frequency, duration)
         {
             const osc1 = new OscillatorNode(someContext);
             const osc2 = new OscillatorNode(someContext);
@@ -47,32 +52,31 @@
 
         }
         
-        
+        // 1. Define the array of choices
         const midiPitches = [60, 62, 63, 67, 69, 72];
-        
+
+        // 2. Create the random picker function
         const randomPitch = function() {
-    // Pick a random MIDI note number from the midiPitches array
-    let randoMidiNote = midiPitches[Math.floor(Math.random() * midiPitches.length)];
+            let randomMidiNote = midiPitches[Math.floor(Math.random() * midiPitches.length)];
+            
+            let newFreq = 440 * 2 ** ((randomMidiNote - 69) / 12);
 
-    // Convert the MIDI note number to frequency (Hz) using the formula
-    // MIDI note 69 = A4 = 440 Hz, each semitone is 2^(1/12) times higher
-    let newFreq = 440 * 2 ** ((randoMidiNote - 69) / 12);
-
-    // Return the frequency value so it can be used in sound synthesis
-    return newFreq;
-
+            return newFreq;
         }
 
-        const myCtx = new AudioContext();
-        const result = randomPitch();
-        
+        // 3. Set up references to the HTML elements
+        const button = document.getElementById("Pick_Play_Button");
+        const resultDisplay = document.getElementById("result");
 
-        document.querySelector("#Play").onclick = () => playNote(myCtx, randomPitch(), 2);
-        document.getElementById("output-box").textContent = result;
-    
-       
+        // 4. Trigger the function on click and print the result
+        button.addEventListener("click", function() {
+            const randomChoice = randomPitch(midiPitches);
+            resultDisplay.textContent = randomChoice;
+
+            //5. play the note
+            document.querySelector("#Pick_Play_Button").onclick = () => playNote(myCtx, randomPitch(), 2);
+        });
     </script>
-    
-</body>
 
+</body>
 </html>
